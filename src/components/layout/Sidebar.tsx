@@ -17,6 +17,7 @@ import {
   X,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCompany } from '@/contexts/CompanyContext';
 import { cn } from '@/lib/utils';
 
 const navigation = [
@@ -38,6 +39,7 @@ interface SidebarProps {
 export function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
   const { user, logout, hasRole } = useAuth();
+  const { company } = useCompany();
 
   const filteredNavigation = navigation.filter(item => hasRole(item.roles));
 
@@ -51,7 +53,12 @@ export function Sidebar({ onClose }: SidebarProps) {
     <div className="flex flex-col w-64 bg-gray-900 min-h-screen">
       {/* Header with close button for mobile */}
       <div className="flex items-center justify-between h-16 bg-gray-800 px-4">
-        <h1 className="text-xl font-bold text-white">Inventory</h1>
+        <div className="flex items-center gap-2">
+          <img src="/inventory-icon.svg" alt="Logo" className="h-9 w-9" />
+          <h1 className="text-sm font-bold text-white truncate max-w-[160px]">
+            {company?.name || 'Inventory'}
+          </h1>
+        </div>
         {onClose && (
           <button
             onClick={onClose}
@@ -61,7 +68,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           </button>
         )}
       </div>
-      
+
       {/* Navigation */}
       <div className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
         {filteredNavigation.map((item) => {

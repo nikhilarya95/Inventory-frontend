@@ -13,7 +13,7 @@ import { stockAPI, productsAPI } from '@/lib/api';
 import { Stock, Product } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { Plus, Edit, Trash2, AlertTriangle, Search, Filter, MapPin } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { Pagination } from '@/components/ui/Pagination';
 import { useMemo } from 'react';
@@ -44,7 +44,7 @@ export default function StockPage() {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const { hasRole } = useAuth();
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<StockForm>();
+  const { register, handleSubmit, reset, control, formState: { errors } } = useForm<StockForm>();
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   useEffect(() => {
@@ -83,7 +83,18 @@ export default function StockPage() {
       });
     } else {
       setEditingStock(null);
-      reset({});
+      reset({
+        product: '',
+        location: '',
+        quantity: 0,
+        weight: 0,
+        weightUnit: 'kg',
+        mrp: 0,
+        discount: 0,
+        batchNumber: '',
+        manufactureDate: new Date().toISOString().split('T')[0],
+        expiryDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+      });
     }
     setIsModalOpen(true);
   };
@@ -110,7 +121,13 @@ export default function StockPage() {
         closeModal();
       }, 1500);
     } catch (error: any) {
-      setStatusMessage({ type: 'error', text: error.response?.data?.message || 'Error saving stock' });
+      let errorMessage = 'Error saving stock';
+      if (error.response?.data?.errors?.[0]?.msg) {
+        errorMessage = error.response.data.errors[0].msg;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+      setStatusMessage({ type: 'error', text: errorMessage });
     } finally {
       setIsSubmitting(false);
     }
@@ -133,7 +150,7 @@ export default function StockPage() {
     return stocks.filter(stock =>
       (filterStatus === 'All' ||
         (filterStatus === 'Low Stock' && stock.quantity < 3) ||
-        (filterStatus === 'Medium' && stock.quantity >= 3 && stock.quantity < 10) ||
+        (filterStatus === 'Medium Status' && stock.quantity >= 3 && stock.quantity < 10) ||
         (filterStatus === 'In Stock' && stock.quantity >= 10)
       ) &&
       (stock.product?.productName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -312,11 +329,20 @@ export default function StockPage() {
               {statusMessage.text}
             </div>
           )}
-          <Select
-            label="Product"
-            {...register('product', { required: 'Product is required' })}
-            options={products.map(p => ({ value: p._id, label: `${p.brandName} - ${p.productName}` }))}
-            error={errors.product?.message}
+          <Controller
+            name="product"
+            control={control}
+            rules={{ required: 'Product is required' }}
+            render={({ field }) => (
+              <Select
+                label="Product"
+                value={field.value}
+                onChange={(e) => field.onChange(e.target.value)}
+                options={products.map(p => ({ value: p._id, label: `${p.brandName} - ${p.productName}` }))}
+                error={errors.product?.message}
+                showSearch={true}
+              />
+            )}
           />
           <div className="grid grid-cols-2 gap-4">
             <Input label="Location" {...register('location', { required: 'Location is required' })} error={errors.location?.message} />
@@ -324,7 +350,23 @@ export default function StockPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <Input label="Weight" type="number" step="0.01" {...register('weight', { required: 'Weight is required', valueAsNumber: true })} error={errors.weight?.message} />
-            <Select label="Weight Unit" {...register('weightUnit')} options={[{ value: 'g', label: 'Grams' }, { value: 'kg', label: 'Kilograms' }, { value: 'ml', label: 'Milliliters' }, { value: 'l', label: 'Liters' }]} />
+            <Controller
+              name="weightUnit"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  label="Weight Unit"
+                  value={field.value}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  options={[
+                    { value: 'g', label: 'Grams' },
+                    { value: 'kg', label: 'Kilograms' },
+                    { value: 'ml', label: 'Milliliters' },
+                    { value: 'l', label: 'Liters' }
+                  ]}
+                />
+              )}
+            />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <Input label="MRP" type="number" step="0.01" {...register('mrp', { required: 'MRP is required', valueAsNumber: true })} error={errors.mrp?.message} />

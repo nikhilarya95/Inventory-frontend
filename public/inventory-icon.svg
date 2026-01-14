@@ -1,0 +1,22 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gear (Top) -->
+  <g transform="translate(32, 16)">
+    <circle cx="0" cy="0" r="10" stroke="#2563eb" stroke-width="4" fill="#bfdbfe" fill-opacity="0.2"/>
+    <circle cx="0" cy="0" r="3" stroke="#2563eb" stroke-width="3" fill="white"/>
+    <!-- Gear teeth -->
+    <path d="M0 -14V-10" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+    <path d="M0 10V14" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+    <path d="M-14 0H-10" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+    <path d="M10 0H14" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+    <path d="M10 -10L7 -7" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+    <path d="M-7 7L-10 10" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+    <path d="M10 10L7 7" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+    <path d="M-7 -7L-10 -10" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <!-- Box Body -->
+  <path d="M32 22L8 34V52L32 64L56 52V34L32 22Z" stroke="#2563eb" stroke-width="3" stroke-linejoin="round" fill="white" fill-opacity="0.05"/>
+  <path d="M8 34L32 46L56 34" stroke="#2563eb" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M32 46V64" stroke="#2563eb" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Ribbon/Bookmark -->
+  <path d="M41 39V52L45 48.5L49 52V39" stroke="#2563eb" stroke-width="3" stroke-linejoin="round" fill="#bfdbfe" fill-opacity="0.4"/>
+</svg>

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { authAPI, companyAPI } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCompany } from '@/contexts/CompanyContext';
 import { useForm } from 'react-hook-form';
 import { User, Building2, Lock, CheckCircle, AlertCircle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -35,6 +36,7 @@ interface CompanyForm {
 
 export default function SettingsPage() {
   const { user, hasRole, refreshUser } = useAuth();
+  const { refreshCompany } = useCompany();
   const [activeTab, setActiveTab] = useState('profile');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [company, setCompany] = useState<CompanyForm | null>(null);
@@ -109,6 +111,7 @@ export default function SettingsPage() {
     try {
       setIsSubmitting(true);
       await companyAPI.update(data);
+      await refreshCompany();
       await loadCompany();
       setFeedback({ type: 'success', text: 'Company information updated successfully' });
     } catch (error: any) {

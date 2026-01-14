@@ -29,7 +29,7 @@ export default function ProductsPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterSort, setFilterSort] = useState<string>('Name A-Z');
+  const [filterSort, setFilterSort] = useState<string>('name-asc');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const { hasRole } = useAuth();
@@ -61,9 +61,9 @@ export default function ProductsPage() {
         product.hsnNumber?.toLowerCase().includes(query)
       );
     }).sort((a, b) => {
-      if (filterSort === 'Name Z-A') return b.productName.localeCompare(a.productName);
-      if (filterSort === 'Brand A-Z') return a.brandName.localeCompare(b.brandName);
-      if (filterSort === 'Brand Z-A') return b.brandName.localeCompare(a.brandName);
+      if (filterSort === 'name-desc') return b.productName.localeCompare(a.productName);
+      if (filterSort === 'brand-asc') return a.brandName.localeCompare(b.brandName);
+      if (filterSort === 'brand-desc') return b.brandName.localeCompare(a.brandName);
       return a.productName.localeCompare(b.productName);
     });
   }, [searchQuery, products, filterSort]);
